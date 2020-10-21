@@ -4,6 +4,50 @@ class Product {
     this.sellIn = sellIn;
     this.price = price;
   }
+
+  maxPrice = 50;
+  minPrice = 0;
+  degrade = 1;
+
+  increasePrice(value = this.degrade) {
+    var amount = this.calculateAmount(value);
+    this.price =
+      this.price + amount <= this.maxPrice
+        ? this.price + amount
+        : this.maxPrice;
+  }
+
+  decreasePrice(value = this.degrade) {
+    var amount = this.calculateAmount(value);
+    this.price =
+      this.price - amount <= this.minPrice
+        ? this.minPrice
+        : this.price - amount;
+  }
+
+  calculateAmount(value) {
+    return this.isValid() ? value : value * 2;
+  }
+
+  decreaseSellIn() {
+    this.sellIn--;
+  }
+
+  isValid() {
+    return this.sellIn > 0;
+  }
+
+  setPrice(value) {
+    this.price = value;
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getSellIn() {
+    return this.sellIn;
+  }
 }
 
 class CarInsurance {
@@ -12,56 +56,53 @@ class CarInsurance {
   }
   updatePrice() {
     for (var i = 0; i < this.products.length; i++) {
-      if (this.products[i].name != 'Full Coverage' && this.products[i].name != 'Special Full Coverage') {
-        if (this.products[i].price > 0) {
-          if (this.products[i].name != 'Mega Coverage') {
-            this.products[i].price = this.products[i].price - 1;
-          }
-        }
-      } else {
-        if (this.products[i].price < 50) {
-          this.products[i].price = this.products[i].price + 1;
-          if (this.products[i].name == 'Special Full Coverage') {
-            if (this.products[i].sellIn < 11) {
-              if (this.products[i].price < 50) {
-                this.products[i].price = this.products[i].price + 1;
-              }
-            }
-            if (this.products[i].sellIn < 6) {
-              if (this.products[i].price < 50) {
-                this.products[i].price = this.products[i].price + 1;
-              }
-            }
-          }
-        }
-      }
-      if (this.products[i].name != 'Mega Coverage') {
-        this.products[i].sellIn = this.products[i].sellIn - 1;
-      }
-      if (this.products[i].sellIn < 0) {
-        if (this.products[i].name != 'Full Coverage') {
-          if (this.products[i].name != 'Special Full Coverage') {
-            if (this.products[i].price > 0) {
-              if (this.products[i].name != 'Mega Coverage') {
-                this.products[i].price = this.products[i].price - 1;
-              }
-            }
-          } else {
-            this.products[i].price = this.products[i].price - this.products[i].price;
-          }
-        } else {
-          if (this.products[i].price < 50) {
-            this.products[i].price = this.products[i].price + 1;
-          }
-        }
-      }
-    }
+      var product = this.products[i];
+      var isValid = product.isValid();
+      var productName = product.getName();
 
+      // Legendary product - Should not be updated
+      if (productName === "Mega Coverage") {
+        continue;
+      }
+
+      switch (productName) {
+        case "Full Coverage":
+          // this product always increase the price
+          product.increasePrice();
+          break;
+
+        case "Special Full Coverage":
+          // if the sellIn is less than zero price should be zero
+          if (!isValid) {
+            product.setPrice(0);
+            break;
+          }
+          var amount = 1;
+          if (product.getSellIn() <= 10) {
+            amount++;
+          }
+          if (product.getSellIn() <= 5) {
+            amount++;
+          }
+          product.increasePrice(amount);
+          break;
+
+        case "Super Sale":
+          // decrease twice faster as normal product
+          product.decreasePrice(product.degrade * 2);
+          break;
+
+        default:
+          product.decreasePrice();
+          break;
+      }
+      product.decreaseSellIn();
+    }
     return this.products;
   }
 }
 
 module.exports = {
   Product,
-  CarInsurance
-}
+  CarInsurance,
+};
