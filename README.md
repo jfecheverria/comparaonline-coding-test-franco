@@ -1,3 +1,32 @@
+# ComparaOnline Test's comments by Franco
+
+This new version includes two modules: Product and CarInsurance. 
+
+The code updates the price of products of our business unit, Car Insurance, based on rules explained bellow.
+
+- All Products have a `sellIn` value which denotes the number of days we have to sell the product.
+- All Products have a `price` value which denotes how much the product cost.
+- The price of the product decreases every day until the sell date, after that decreases twice as fast. 
+- The price of the product should be between zero (0) and fifty (50), except for the special product, except for **"Mega Coverage"**
+- There is some special products: 
+  - **"Mega Coverage"** should not be updated, this is a legendary product. 
+  - **"Full Coverage"** increases in `price` the older it gets, until the sell date, after that increase twice as fast.
+  - **"Super Sale"** Products degrade in `price` twice as fast as normal Products.
+  - **"Special Full Coverage"**, like full coverage, increases in `price` as its `sellIn` value approaches:
+	  - `price` increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but.
+	  - `price` drops to 0 when no more days left (and the product is not valid anymore).
+
+## Installation
+- clone the repository in your local `git clone https://github.com/jfecheverria/comparaonline-coding-test-franco.git`
+- run `npm install`
+
+## Commands
+- `npm run test`, should run the test suite and display the coverage report
+- `npm run test-report-html`, should run the test suite and save the coverage report into an html file in the coverage folder
+- `npm run after-30-days`, display an output similar to `products_after_30_days.txt`in the console
+
+
+
 # ComparaOnline Test Requirements Specification
 
 Hi, welcome to the Software Engineer CO Test. In this test we expect to see your approach to refactor a legacy code into a testeable, object oriented solution.
